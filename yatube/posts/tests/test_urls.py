@@ -1,7 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.http import response
 from django.test import TestCase, Client
-from django.urls import reverse
 
 
 from ..models import Group, Post
@@ -81,7 +79,7 @@ class PostsAndStaticURLTests(TestCase):
     def test_comment_page(self):
         response = self.guest_client.get(f'/posts/{self.post.id}/comment/')
         self.assertEqual(response.status_code, 302)
-    
+
     def test_unexcisting_page(self):
         response = self.authorized_client.get('/unexcisting_page/')
         self.assertEqual(response.status_code, 404)

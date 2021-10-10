@@ -52,6 +52,7 @@ class Group(models.Model):
     def __str__(self):
         return self.title
 
+
 class Comment(CreatedModel):
     post = models.ForeignKey(
         Post,
@@ -79,6 +80,7 @@ class Comment(CreatedModel):
     def __str__(self):
         return self.text
 
+
 class Follow(models.Model):
     user = models.ForeignKey(
         User,
@@ -97,6 +99,6 @@ class Follow(models.Model):
         ordering = ['author']
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-    
+
     def __str__(self):
         return f'{self.user} подписан на {self.author}'
