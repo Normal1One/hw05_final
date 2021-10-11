@@ -52,7 +52,7 @@ class PostsPagesTests(TestCase):
             content=cls.small_gif,
             content_type='image/gif',
         )
-        cls.follow = Follow.objects.create(author=cls.author_с, user=cls.user)
+        Follow.objects.create(author=cls.author_с, user=cls.user)
 
     @classmethod
     def tearDownClass(cls):
@@ -82,6 +82,16 @@ class PostsPagesTests(TestCase):
             response,
             self.authorized_client.get(reverse('posts:index')).content
         )
+
+    def test_context_follow_page_sub(self):
+        self.assertTrue(Follow.objects.filter(
+            author=self.author_с, user=self.user).exists())
+
+    def test_context_follow_page_unsub(self):
+        follow = Follow.objects.filter(author=self.author_с, user=self.user)
+        follow.delete()
+        self.assertFalse(Follow.objects.filter(
+            author=self.author_с, user=self.user).exists())
 
     def test_pages_uses_correct_template(self):
         template_page_names = {
@@ -219,12 +229,13 @@ class PostsPagesTests(TestCase):
         self.assertIsNotNone(self.post)
         self.assertIsNotNone(post_image_0)
 
-    def test_posts_follow_page_show_correct_context(self):
+    def test_posts_follow_page_show_correct_context_sub(self):
         author_post = Post.objects.create(
             author=self.author_с,
             text='Тестовый',
             group=self.author_group
         )
+        Follow.objects.create(author=self.author_с, user=self.user)
         response = self.authorized_client.get(reverse('posts:follow_index'))
         first_object = response.context['page_obj'][0]
         post_author_0 = first_object.author.username
@@ -235,4 +246,4 @@ class PostsPagesTests(TestCase):
         self.assertEqual(post_pud_date_0, author_post.pub_date)
         self.assertEqual(post_text_0, author_post.text)
         self.assertEqual(post_slug_0, author_post.group.slug)
-        self.assertIsNotNone(self.post)
+        self.assertIsNotNone(author_post)

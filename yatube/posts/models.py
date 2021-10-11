@@ -57,14 +57,12 @@ class Comment(CreatedModel):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        null=True,
         related_name='comments',
         verbose_name='Пост'
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        null=True,
         related_name='comments',
         verbose_name='Автор'
     )
@@ -99,6 +97,10 @@ class Follow(models.Model):
         ordering = ['author']
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'], name='unique_subscription')
+        ]
 
     def __str__(self):
         return f'{self.user} подписан на {self.author}'

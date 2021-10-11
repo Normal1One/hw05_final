@@ -91,7 +91,7 @@ class PostCreateFormTests(TestCase):
                 image='posts/small.gif'
             ).exists()
         )
-        post = Post.objects.all()[0]
+        post = Post.objects.first()
         self.assertEqual(Post.objects.get(
             text=form_data.get('text')).text, form_data.get('text'))
         self.assertEqual(post.author, self.user)
@@ -137,16 +137,13 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(Post.objects.count(), posts_count)
 
     def text_comment_create_post(self):
+        Comment.objects.create(
+            post=self.post,
+            author=self.user,
+            text='Тестовый комментарий под тестовым постом'
+        )
         self.assertTrue(
             Comment.objects.filter(
-                text=self.text
-            ).exists()
-        )
-
-    def test_follow_page(self):
-        self.assertTrue(
-            Follow.objects.filter(
-                author=self.author,
-                user=self.user
+                text=self.comment.text
             ).exists()
         )
