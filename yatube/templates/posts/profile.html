@@ -1,24 +1,24 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
 {% block title %} 
-Записи {{ user_req }}
+Записи {{ user_author }}
 {% endblock %}
 
 {% block content %}
   <div class="container py-5">      
-    <h1>Все посты пользователя {{ user_req.get_full_name }} </h1>
+    <h1>Все посты пользователя {{ user_author.get_full_name }} </h1>
     <div class="mb-5">
       {% if follow %}
         <a
           class="btn btn-lg btn-light"
-          href="{% url 'posts:profile_unfollow' user_req.username %}" role="button"
+          href="{% url 'posts:profile_unfollow' user_author.username %}" role="button"
         >
           Отписаться
         </a>
       {% else %}
           <a
             class="btn btn-lg btn-primary"
-            href="{% url 'posts:profile_follow' user_req.username %}" role="button"
+            href="{% url 'posts:profile_follow' user_author.username %}" role="button"
           >
             Подписаться
           </a>
@@ -28,7 +28,7 @@
     {% for post in page_obj %}  
         <ul>
           <li>
-            Автор: {{ user_req }}
+            Автор: {{ user_author }}
           </li>
           <li>
             Дата публикации: {{ post.pub_date|date:"d E Y" }}
