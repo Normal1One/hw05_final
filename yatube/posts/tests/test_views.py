@@ -3,6 +3,7 @@ import tempfile
 
 
 from django.contrib.auth import get_user_model
+from django.http import response
 from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -52,7 +53,7 @@ class PostsPagesTests(TestCase):
             content=cls.small_gif,
             content_type='image/gif',
         )
-        Follow.objects.create(author=cls.author_с, user=cls.user)
+        Follow.objects.create(user=cls.user, author=cls.author_с)
 
     @classmethod
     def tearDownClass(cls):
@@ -83,15 +84,20 @@ class PostsPagesTests(TestCase):
             self.authorized_client.get(reverse('posts:index')).content
         )
 
-    def test_context_follow_page_sub(self):
-        self.assertTrue(Follow.objects.filter(
-            author=self.author_с, user=self.user).exists())
-
-    def test_context_follow_page_unsub(self):
-        follow = Follow.objects.filter(author=self.author_с, user=self.user)
+    def test_follow_page_sub(self):
+        follow = Follow.objects.filter(user=self.user, author=self.author_с)
         follow.delete()
-        self.assertFalse(Follow.objects.filter(
-            author=self.author_с, user=self.user).exists())
+        count = follow.count()
+        responce = self.authorized_client.get(f'/profile/{self.author_с.username}/follow/', follow=True)
+        self.assertEqual(responce.status_code, 200)
+        self.assertNotEqual(count, follow.count())
+
+    def test_follow_page_unsub(self):
+        follow = Follow.objects.filter(user=self.user, author=self.author_с)
+        count = follow.count()
+        response = self.authorized_client.get(f'/profile/{self.author_с.username}/unfollow/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(count, follow.count())
 
     def test_pages_uses_correct_template(self):
         template_page_names = {
