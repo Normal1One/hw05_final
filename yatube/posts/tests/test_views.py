@@ -88,14 +88,16 @@ class PostsPagesTests(TestCase):
         follow = Follow.objects.filter(user=self.user, author=self.author_с)
         follow.delete()
         count = follow.count()
-        responce = self.authorized_client.get(f'/profile/{self.author_с.username}/follow/', follow=True)
+        responce = self.authorized_client.get(
+            f'/profile/{self.author_с.username}/follow/', follow=True)
         self.assertEqual(responce.status_code, 200)
         self.assertNotEqual(count, follow.count())
 
     def test_follow_page_unsub(self):
         follow = Follow.objects.filter(user=self.user, author=self.author_с)
         count = follow.count()
-        response = self.authorized_client.get(f'/profile/{self.author_с.username}/unfollow/', follow=True)
+        response = self.authorized_client.get(
+            f'/profile/{self.author_с.username}/unfollow/', follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(count, follow.count())
 
