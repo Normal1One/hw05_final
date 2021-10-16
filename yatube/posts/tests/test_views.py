@@ -220,7 +220,7 @@ class PostsPagesTests(TestCase):
         self.assertIsNotNone(self.post)
         self.assertIsNotNone(post_image_0)
 
-    def test_posts_profile_page_show_correct_context(self):
+    def test_posts_post_detail_page_show_correct_context(self):
         response = self.authorized_client.get(
             reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
         first_object = response.context['post']
